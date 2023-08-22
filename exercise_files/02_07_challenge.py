@@ -35,7 +35,7 @@ class TerminalScribe:
         self.canvas = canvas
         self.trail = '.'
         self.mark = '*'
-        self.framerate = 0.2
+        self.framerate = 0.8
         self.pos = [0, 0]
 
     def up(self):
@@ -58,6 +58,31 @@ class TerminalScribe:
         if not self.canvas.hitsWall(pos):
             self.draw(pos)
 
+    # Created a few methods to help draw the diamond shape
+    def down_right(self):
+        pos = [self.pos[0]+1, self.pos[1]+1]
+        if not self.canvas.hitsWall(pos):
+            self.draw(pos)
+    def down_left(self):
+        pos = [self.pos[0]-1, self.pos[1]+1]
+        if not self.canvas.hitsWall(pos):
+            self.draw(pos)
+
+    def up_left(self):
+        pos = [self.pos[0]-1, self.pos[1]-1]
+        if not self.canvas.hitsWall(pos):
+            self.draw(pos)
+    
+    def up_right(self):
+        pos = [self.pos[0]+1, self.pos[1]-1]
+        if not self.canvas.hitsWall(pos):
+            self.draw(pos)
+
+    # Created a function to modify the initial position of the mark - necessary for the diamond shape
+
+    def set_start(self, width, depth):
+        self.pos = [width, depth]
+
     def draw(self, pos):
         # Set the old position to the "trail" symbol
         self.canvas.setPos(self.pos, self.trail)
@@ -70,6 +95,18 @@ class TerminalScribe:
         # Sleep for a little bit to create the animation
         time.sleep(self.framerate)
 
+    # Defined the function that makes squares directly within the TerminalScribe class. this way, any object of the class can use it.
+
+    def make_square(self, size):
+        for i in range(size-1):
+            self.right()
+        for i in range(size -1):
+            self.down()
+        for i in range(size-1):
+            self.left()
+        for i in range(size-1):
+            self.up()
+
 # Create a new Canvas instance that is 30 units wide by 30 units tall 
 canvas = Canvas(30, 30)
 
@@ -77,17 +114,60 @@ canvas = Canvas(30, 30)
 scribe = TerminalScribe(canvas)
 
 # Draw a small square
-scribe.right()
-scribe.right()
-scribe.right()
-scribe.down()
-scribe.down()
-scribe.down()
-scribe.left()
-scribe.left()
-scribe.left()
-scribe.up()
-scribe.up()
-scribe.up()
+# scribe.right()
+# scribe.right()
+# scribe.right()
+# scribe.down()
+# scribe.down()
+# scribe.down()
+# scribe.left()
+# scribe.left()
+# scribe.left()
+# scribe.up()
+# scribe.up()
+# scribe.up()
+# create a function that draws a square. 
+# be able to pass in the size of the square as an arguement
+# TODO Try and draw other shapes
+# TODO draw_square method on the terminal scribe class itself
 
+def draw_square(size):
+    
+    for i in range(size-1):
+        scribe.right()
+    for i in range(size -1):
+        scribe.down()
+    for i in range(size-1):
+        scribe.left()
+    for i in range(size-1):
+        scribe.up()
+# diamond
+
+def draw_diamond(hight, scrb):
+    #try and make a function to draw a romb shape
+
+    if hight % 2 ==0:
+        print("Error, the hight must be an odd number.")
+        return
+    else:
+        top_hight = int(hight / 2)
+        bot_hight = top_hight
+    
+    scrb.set_start(hight+1, 0)
+    for i in range(top_hight):
+        scribe.down_right()
+    for i in range(bot_hight):
+        scribe.down_left()
+    for i in range(bot_hight):
+        scribe.up_left()
+    for i in range(top_hight):
+        scribe.up_right()
+    
+
+
+
+# scribe.set_start(8,3)
+# draw_square(6)
+draw_diamond(11, scribe)
+# scribe.make_square(4)
 
