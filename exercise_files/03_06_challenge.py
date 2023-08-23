@@ -1,6 +1,7 @@
 import os
 import time
 from termcolor import colored
+import math
 
 class Canvas:
     def __init__(self, width, height):
@@ -29,6 +30,7 @@ class TerminalScribe:
         self.mark = '*'
         self.framerate = 0.05
         self.pos = [0, 0]
+        
 
     def up(self):
         pos = [self.pos[0], self.pos[1]-1]
@@ -77,8 +79,18 @@ class TerminalScribe:
         self.canvas.print()
         time.sleep(self.framerate)
 
+        
+
+    def direction(self, degrees):
+        radians = math.radians(degrees)
+        direction_vector = [math.cos(radians), math.sin(radians)]
+        pos = [self.pos[0]+ direction_vector[0], self.pos[1]+direction_vector[1]]
+        if not self.canvas.hitsWall(pos):
+            self.draw(pos)
+
 canvas = Canvas(30, 30)
 scribe = TerminalScribe(canvas)
 
-scribe.drawSquare(20)
+# scribe.drawSquare(20)
+scribe.direction(45)
 
