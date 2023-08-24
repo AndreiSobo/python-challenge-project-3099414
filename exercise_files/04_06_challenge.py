@@ -29,7 +29,7 @@ class TerminalScribe:
         self.canvas = canvas
         self.trail = '.'
         self.mark = '*'
-        self.framerate = 0.05
+        self.framerate = 0.2
         self.pos = [0, 0]
 
         self.direction = [0, 1]
@@ -78,7 +78,42 @@ class TerminalScribe:
 
 canvas = Canvas(30, 30)
 scribe = TerminalScribe(canvas)
-scribe.setDegrees(135)
-for i in range(30):
-    scribe.forward()
+# scribe.setDegrees(135)
+# for i in range(30):
+#     scribe.forward()
 
+# Create a data structure that defines some number of scribes, with instructions for each of those scribes
+# and then create a function that takes all of that data and makes the whole thing go
+# You may or may not include the canvas definition in the data structure.
+
+# make a list of dictionary objects where each dictionary defines a scribe, plus some instructions to move around.
+# remember to include the starting direction for each scribe.
+scribes_data = [
+    {
+        "position" : [0, 0],
+        "moves" : ["right", "right", "right","down", "down", "down", "left", "left", "left", "up", "up", "up"],
+        "degrees" : 90
+    },
+    {
+        "position" : [5,5],
+        "moves" : ["right", "up", "right", "up", "right", "right", "down", "down"],
+        "degrees" : 45
+    }
+]
+
+
+for scrib in scribes_data:
+    scribex = TerminalScribe(canvas)
+    scribex.setDegrees(scrib["degrees"])
+    scribex.pos = scrib["position"]
+    for move in scrib["moves"]:
+        if move == "forward":
+            scribex.forward()
+        elif move == "up":
+            scribex.up()
+        elif move == "down":
+            scribex.down()
+        elif move == "right":
+            scribex.right()
+        elif move == "left":
+            scribex.left()
