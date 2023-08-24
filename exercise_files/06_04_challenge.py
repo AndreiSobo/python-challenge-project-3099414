@@ -1,7 +1,10 @@
 import os
 import time
 from termcolor import colored
-import math 
+import math
+import matplotlib.pyplot as plt
+
+
 
 
 class Canvas:
@@ -102,3 +105,20 @@ scribe.setDegrees(150)
 scribe.forward(100)
 
 
+
+# TODO define a function outside of the TerminalScribe class entirely 
+# then pass that function in the scribe instance, and have it plot the function
+
+
+# x = [1, 2, 3, 4]
+# y = [1, 4, 9, 16]
+# grades = "suuup"
+# plt.plot(x, y, color = "green")
+# plt.title("HelloTitle here")
+# plt.xlabel = "hamsters"
+# plt.ylabel = "cabbage"
+# # plt.legend()
+# plt.show()
+
+def plot_it():
+    pass
