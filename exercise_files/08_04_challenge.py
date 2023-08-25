@@ -50,6 +50,8 @@ class CanvasAxis(Canvas):
 
         print(' '.join([self.formatAxisNumber(x) for x in range(self._x)]))
 
+
+
 class TerminalScribe:
     def __init__(self, canvas, color='red', mark='*', trail='.', pos=(0, 0), framerate=.05, direction=[0, 1]):
         self.canvas = canvas
@@ -64,20 +66,33 @@ class TerminalScribe:
         self.pos = pos
 
     def setDegrees(self, degrees):
-        radians = (degrees/180) * math.pi 
-        self.direction = [math.sin(radians), -math.cos(radians)]
+        try:
+            if degrees >= 360:
+                raise ValueError("Degrees must be in range 0-360")
+            
+            radians = (degrees/180) * math.pi 
+            self.direction = [math.sin(radians), -math.cos(radians)]
+        except ValueError as e:
+            print(f"Error: {e}")
 
     def bounce(self, pos):
         reflection = self.canvas.getReflection(pos)
         self.direction = [self.direction[0] * reflection[0], self.direction[1] * reflection[1]]
 
+    # Added exception for the "distance" parameter
     def forward(self, distance):
-        for i in range(distance):
-            pos = [self.pos[0] + self.direction[0], self.pos[1] + self.direction[1]]
-            if self.canvas.hitsWall(pos):
-                self.bounce(pos)
+        try:
+            if not isinstance(distance, int):
+                raise ValueError("Distance must be an integer")
+            
+            for i in range(distance):
                 pos = [self.pos[0] + self.direction[0], self.pos[1] + self.direction[1]]
-            self.draw(pos)
+                if self.canvas.hitsWall(pos):
+                    self.bounce(pos)
+                    pos = [self.pos[0] + self.direction[0], self.pos[1] + self.direction[1]]
+                self.draw(pos)
+        except ValueError as e:
+            print(e)
 
     def draw(self, pos):
         self.canvas.setPos(self.pos, self.trail)
@@ -116,12 +131,20 @@ class RobotScribe(TerminalScribe):
         self.left(size)
         self.up(size)
 
+class DegreesOutOfRangeError(Exception):
+    def __init__(self, value):
+        self.value = value
+        super().__init__(f"Degrees calue {value} is out of range. Max accepted is 360")
+
 class RandomWalkScribe(TerminalScribe):
     def __init__(self, canvas, degrees=135, **kwargs):
         super().__init__(canvas, **kwargs)
         self.degrees = degrees
     
     def randomizeDegreeOrientation(self):
+        if self.degrees > 360:
+            raise DegreesOutOfRangeError(self.degrees)
+        
         self.degrees = random.randint(self.degrees-10, self.degrees+10)
         self.setDegrees(self.degrees)
     
@@ -147,13 +170,17 @@ def cosine(x):
 
 canvas = CanvasAxis(30, 30)
 plotScribe = PlotScribe(canvas)
-plotScribe.plotX(sine)
+# plotScribe.plotX(sine)
 
 robotScribe = RobotScribe(canvas, color='blue')
-robotScribe.drawSquare(10)
+# robotScribe.drawSquare(10)
 
 randomScribe = RandomWalkScribe(canvas, color='green', pos=(0, 0))
-randomScribe.forward(1000)
+# randomScribe.forward(5)
+a = TerminalScribe(canvas)
+a.setPosition([10,10])
+a.setDegrees(500)
+a.forward(30)
 
 
 
