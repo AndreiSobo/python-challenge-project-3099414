@@ -3,6 +3,7 @@ import time
 from termcolor import colored, COLORS
 import math 
 import random
+from threading import Thread
 
 class TerminalScribeException(Exception):
     def __init__(self, message=''):
@@ -35,18 +36,24 @@ class Canvas:
         try:
             self._canvas[round(pos[0])][round(pos[1])] = mark
         except Exception as e:
-            raise TerminalScribeException(e)
+            raise TerminalScribeException(e) # type: ignore
 
     def clear(self):
         os.system('cls' if os.name == 'nt' else 'clear')
+
+    # for each set of movements the Canvas should spin up a new thread for each scribe, 
+    # that scribe's move is then executed in that thread, all the threads are collected and the canvas is reprinted. 
 
     def go(self):
         max_moves = max([len(scribe.moves) for scribe in self.scribes])
         for i in range(max_moves):
             for scribe in self.scribes:
+                threads = []
                 if len(scribe.moves) > i:
                     args = scribe.moves[i][1]+[self]
-                    scribe.moves[i][0](*args)
+                    threads.append(Thread(target=scribe.moves[i][0], args=args))
+                [thread.start() for thread in threads]
+                [thread.join()for thread in threads]
             self.print()
             time.sleep(self.framerate)
 
@@ -243,4 +250,7 @@ scribe5 = RandomWalkScribe(color='blue')
 scribe5.forward(1000)
 canvas = CanvasAxis(40, 40, scribes=[scribe1, scribe2, scribe3, scribe4, scribe5])
 canvas.go()
+
+# for each set of movements the Canvas should spin up a new thread for each scribe, 
+# that scribe's move is then executed in that thread, all the threads are collected and the canvas is reprinted. 
 

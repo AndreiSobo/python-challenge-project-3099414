@@ -45,8 +45,8 @@ class Canvas:
         }
 
     def fromDict(data):
-        canvas = globals()[data.get('classname')](data.get('x'), data.get('y'), scribes=[globals()[scribe.get('classname')].fromDict(scribe) for scribe in data.get('scribes')])
-        canvas._canvas = data.get('canvas')
+        canvas = globals()[data.get('classname')](data.get('x'), data.get('y'), scribes=[globals()[scribe.get('classname')].fromDict(scribe) for scribe in data.get('scribes')]) # type: ignore
+        canvas._canvas = data.get('canvas') # type: ignore
         return canvas
 
     def hitsVerticalWall(self, point):
@@ -65,7 +65,7 @@ class Canvas:
         try:
             self._canvas[round(pos[0])][round(pos[1])] = mark
         except Exception as e:
-            raise TerminalScribeException(e)
+            raise TerminalScribeException(e) # type: ignore
 
     def clear(self):
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -139,13 +139,13 @@ class TerminalScribe:
         }
 
     def fromDict(data):
-        scribe = globals()[data.get('classname')](
-            color=data.get('color'),
-            mark=data.get('mark'),
-            trail=data.get('trail'),
-            pos=data.get('pos'),
+        scribe = globals()[data.get('classname')]( # type: ignore
+            color=data.get('color'), # type: ignore
+            mark=data.get('mark'), # type: ignore
+            trail=data.get('trail'), # type: ignore
+            pos=data.get('pos'), # type: ignore
             )
-        scribe.moves = scribe._movesFromDict(data.get('moves'))
+        scribe.moves = scribe._movesFromDict(data.get('moves')) # type: ignore
         return scribe
 
     def _movesFromDict(self, movesData):
@@ -208,14 +208,14 @@ class PlotScribe(TerminalScribe):
         return data
 
     def fromDict(data):
-        scribe = globals()[data.get('classname')](
-            color=data.get('color'),
-            mark=data.get('mark'),
-            trail=data.get('trail'),
-            pos=data.get('pos'),
-            domain=data.get('domain'),
+        scribe = globals()[data.get('classname')](  # type: ignore
+            color=data.get('color'),    # type: ignore
+            mark=data.get('mark'),  # type: ignore
+            trail=data.get('trail'),    # type: ignore
+            pos=data.get('pos'), # type: ignore
+            domain=data.get('domain'), # type: ignore
         )
-        scribe.x = data.get('x')
+        scribe.x = data.get('x') # type: ignore
         return scribe
 
     def _plotX(self, function, canvas):
@@ -302,4 +302,3 @@ robotScribe = RobotScribe(color='yellow')
 robotScribe.drawSquare(20)
 
 canvas = CanvasAxis(40, 40, scribes=[scribe, robotScribe])
-
